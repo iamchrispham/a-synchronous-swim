@@ -23,12 +23,18 @@ module.exports.router = (req, res, next = ()=>{}) => {
   } else if (req.method === 'GET') {
     console.log('Serving request type ' + req.method + ' url ' + req.url);
     res.writeHead(200, headers);
-    res.end(messageQueue.dequeue());
+    res.end(messagesQueue.dequeue());
     next(); // invoke next() at the end of a request to help with testing!
-  } 
+  } else if (req.method === 'POST') {
+    console.log('Serving request type ' + req.method + ' url ' + req.url);
+    res.writeHead(201, headers);
+    res.end();
+  }
 };
-// keypressHandler.initialize(message);
-// var randSwim = function() {
+
+
+// step 2
+// var randSwim = function () {
 //   let command = ['up', 'down', 'left', 'right'];
 //   let randCommand = command[Math.floor(Math.random() * command.length)]
 //   return randCommand;
