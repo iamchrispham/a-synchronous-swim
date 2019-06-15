@@ -54,7 +54,7 @@ module.exports.initialize = (callback) => {
       message += (mappedChars[key.name] || key.name);
       logKeypress(key.name);
     }
-
+    
   });
 };
 
