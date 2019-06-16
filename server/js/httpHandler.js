@@ -6,36 +6,68 @@ const messages = require('./messageQueue');
 const keypressHandler = require('./keypressHandler');
 
 // Path for the background image ///////////////////////
-module.exports.backgroundImageFile = path.join('.', 'background.jpg');
+module.exports.backgroundImageFile = path.join('.', 'background.jpeg');
 ////////////////////////////////////////////////////////
-
+//console.log('BG', module.exports.backgroundImageFile);
 let messageQueue = null;
 module.exports.initialize = (queue) => {
   messageQueue = queue;
 };
 
 module.exports.router = (req, res, next = ()=>{}) => {
+  console.log('Serving request type ' + req.method + ' for url ' + req.url);
   if (req.method === 'OPTIONS') {
-    console.log('Serving request type ' + req.method + ' for url ' + req.url);
     res.writeHead(200, headers);
     res.end();
-    next(); // invoke next() at the end of a request to help with testing!
-  } else if (req.method === 'GET') {
-    console.log('Serving request type ' + req.method + ' url ' + req.url);
-    res.writeHead(200, headers);
-    res.end(messagesQueue.dequeue());
-    next(); // invoke next() at the end of a request to help with testing!
+    next(); 
+  } else if (req.method === 'GET') { // GET
+    if (req.url === '/moves') {
+      res.writeHead(200, headers);
+      res.write(messageQueue.dequeue() || '');
+      res.end();
+      next(); 
+    } else if (req.url === module.exports.backgroundImageFile) {
+      let {backgroundImageFile} = module.exports;
+      // console.log('bg path:', backgroundImageFile);
+      fs.readFile(backgroundImageFile, (err, results) => {
+        if (err) {
+          console.log('Server missing:', backgroundImageFile);
+          res.writeHead(404, headers);
+          res.end();
+          next();
+        } else {
+          console.log('Server sent back background image successfully:', backgroundImageFile);
+          res.writeHead(200, headers);
+          res.write(results);
+          res.end();
+          next();
+        }
+      });
+    } else if (req.url === '/up' || req.url === '/down' || req.url === '/left' || req.url === '/right' ) { 
+      res.writeHead(200, headers);
+      res.write(randSwim());
+      res.end();
+      next();
+    } else {
+      res.writeHead(404, headers);
+      res.end();
+      next();
+    }
   } else if (req.method === 'POST') {
-    console.log('Serving request type ' + req.method + ' url ' + req.url);
-    res.writeHead(201, headers);
-    res.end();
+    if (req.url === '/moves-post') {
+      console.log('Serving request type ' + req.method + ' URL ' + req.url);
+      res.writeHead(201, headers);
+      console.log('POST RES:', req.data); // undefined
+      res.end();
+      next();
+    }
   }
 };
 
 
 // step 2
-// var randSwim = function () {
-//   let command = ['up', 'down', 'left', 'right'];
-//   let randCommand = command[Math.floor(Math.random() * command.length)]
-//   return randCommand;
-// }
+var randSwim = function () {
+  let command = ['up', 'down', 'left', 'right'];
+  let randCommand = command[Math.floor(Math.random() * command.length)]
+  return randCommand;
+}

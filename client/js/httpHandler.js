@@ -1,21 +1,23 @@
 (function() {
 
   const serverUrl = 'http://127.0.0.1:3000';
-  const serverUrl2 = 'http://127.0.0.1:8080';
+
   //
   // TODO: build the swim command fetcher here
   //
   const ajaxCommandFetch = () => {
     $.ajax({
       type: 'GET',
-      url: serverUrl,
+      url: `${serverUrl}/moves`,
       success: (data) => {
-       console.log('Successful swim command fetch!', data);
-        SwimTeam.move(data);
+      SwimTeam.move(data);
+      if (data !== ''){
+        setTimeout(x => {ajaxCommandFetch()}, 2000);
+        }
       }
     })
   }
-
+  
   ajaxCommandFetch();
   
   /////////////////////////////////////////////////////////////////////
@@ -39,17 +41,6 @@
       }
     });
   };
-
-  const ajaxSwimmerToServer = function (move) {
-    $.ajax({
-      type: 'POST',
-      data: move,
-      url: serverUrl2,
-      success: () => {
-        ajaxCommandFetch();
-      }
-    })
-  }
 
   $('form').on('submit', function(e) {
     e.preventDefault();
