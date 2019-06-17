@@ -52,25 +52,41 @@ module.exports.router = (req, res, next = ()=>{}) => {
       res.end();
       next();
     } else {
+      console.log('Server hit a 404 error');
       res.writeHead(404, headers);
       res.end();
       next();
     }
   } else if (req.method === 'POST') {
-    if (req.url === '/moves-post') {
-      console.log('Serving request type ' + req.method + ' URL ' + req.url);
-      res.writeHead(201, headers);
-      console.log('POST RES:', req.data); // undefined
-      res.end();
-      next();
+      if (req.url === '/background.jpeg') {
+        let imgData = Buffer.alloc(0);
+        req.on('data', (chunk) => {
+          imgData = Buffer.concat([imgData, chunk]);
+          });
+        res.writeHead(201, headers);
+        req.on('end', () => {
+          const file = multipart.getFile(imgData);
+          var { backgroundImageFile } = module.exports;
+          fs.writeFile(backgroundImageFile, file.data, (err) => {
+            if (err) {
+              res.writeHead(400, headers);
+              res.end();
+            } else {
+              res.writeHead(201, headers);
+              res.end();
+            }
+          })
+        });
+        res.end();
+        next();
+      } 
     }
-  }
 };
 
 
-// step 2
-var randSwim = function () {
-  let command = ['up', 'down', 'left', 'right'];
-  let randCommand = command[Math.floor(Math.random() * command.length)]
-  return randCommand;
-}
+// step 2 for processing a random swim command
+// var randSwim = function () {
+//   let command = ['up', 'down', 'left', 'right'];
+//   let randCommand = command[Math.floor(Math.random() * command.length)]
+//   return randCommand;
+// }
