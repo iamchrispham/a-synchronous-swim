@@ -37,7 +37,6 @@
       processData: false,
       success: () => {
         // reload the page
-        console.log('success');
         window.location = window.location.href;
       },
       error: (err) => {console.error(err)}

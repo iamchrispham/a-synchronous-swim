@@ -2,8 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const headers = require('./cors');
 const multipart = require('./multipartUtils');
-const messages = require('./messageQueue');
-const keypressHandler = require('./keypressHandler');
 
 // Path for the background image ///////////////////////
 module.exports.backgroundImageFile = path.join('.', 'background.jpeg');
