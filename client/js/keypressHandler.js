@@ -2,13 +2,12 @@
 const serverUrl = 'http://127.0.0.1:3000';
 const ajaxSwimmerToServer = (move) => {
   $.ajax({
-    type: 'POST',
+    type: 'GET',
     data: move,
     dataType: 'text',
-    url: `${serverUrl}/moves-post`,
-    success: () => {
-      console.log('Successful Post to server');
-     // ajaxCommandFetch();
+    url: `${serverUrl}/`,
+    success: (data) => {
+      SwimTeam.move(data);
     }
   })
 }

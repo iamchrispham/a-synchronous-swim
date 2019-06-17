@@ -12,7 +12,7 @@
       success: (data) => {
       SwimTeam.move(data);
       if (data !== ''){
-        setTimeout(x => {ajaxCommandFetch()}, 2000);
+        setTimeout(x => {ajaxCommandFetch()}, 200);
         }
       }
     })
